@@ -150,28 +150,22 @@ aggregate(add_data$ride_length ~ add_data$member_casual, FUN = median)
 aggregate(add_data$ride_length ~ add_data$member_casual, FUN = max)
 aggregate(add_data$ride_length ~ add_data$member_casual, FUN = min)
 
-
-### TU SKOŃCZYŁEM, DALEJ KOD Z PLIKU 
-
-
 # See the average ride time by each day for members vs casual users
 aggregate(add_data$ride_length ~ add_data$member_casual + add_data$weekday, FUN = mean)
-
-# Notice that the days of the week are out of order. Let's fix that.
 add_data$weekday <- ordered(add_data$weekday, levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
 
-# Now, let's run the average ride time by each day for members vs casual users
+# average ride time by each day for members vs casual users
 aggregate(add_data$ride_length ~ add_data$member_casual + add_data$weekday, FUN = mean)
 
 # analyze ridership data by type and weekday
 add_data %>% 
-  mutate(weekday = wday(started_at, label = TRUE)) %>%  #creates weekday field using wday()
-  group_by(member_casual, weekday) %>%  #groups by usertype and weekday
-  summarise(number_of_rides = n()							#calculates the number of rides and average duration 
-            ,average_duration = mean(ride_length)) %>% 		# calculates the average duration
-  arrange(member_casual, weekday)								# sorts
+  mutate(weekday = wday(started_at, label = TRUE)) %>%
+  group_by(member_casual, weekday) %>%  
+  summarise(number_of_rides = n()							 
+            ,average_duration = mean(ride_length)) %>% 		
+  arrange(member_casual, weekday)								
 
-# Let's visualize the number of rides by rider type
+# Visualization of the number of rides by rider type
 add_data %>% 
   mutate(weekday = wday(started_at, label = TRUE)) %>% 
   group_by(member_casual, weekday) %>% 
@@ -181,7 +175,7 @@ add_data %>%
   ggplot(aes(x = weekday, y = number_of_rides, fill = member_casual)) +
   geom_col(position = "dodge")
 
-# Let's create a visualization for average duration
+# Visualization for average duration
 add_data %>% 
   mutate(weekday = wday(started_at, label = TRUE)) %>% 
   group_by(member_casual, weekday) %>% 
@@ -190,12 +184,6 @@ add_data %>%
   arrange(member_casual, weekday)  %>% 
   ggplot(aes(x = weekday, y = average_duration, fill = member_casual)) +
   geom_col(position = "dodge")
-
-#plot casul/member on days of week with bike types; something is wrong and I can't show days of week
-#add_data$weekday <- factor(add_data$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
-#ggplot(add_data) + geom_bar(mapping = aes(x = weekday, fill = rideable_type)) +
-#  facet_wrap(~member_casual) +
-#  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #duration vs distance
 ggplot(filter(add_data, add_data$ride_length < 3600)) +
@@ -208,17 +196,3 @@ ggplot(filter(add_data, add_data$ride_length < 10000)) +
   geom_density(mapping = aes(x = ride_length)) +
   facet_wrap(~member_casual)
 #casuals cover a greater distance, but it's not big diffrence
-
-#I ENDED HERE, I SHOULD LOOK ON LAST CARD IN THE CHROME ON KAGGLE, MAKE TWO/THREE VIZZES AND END IT
-
-
-### SHARE
-
-
-### ACT
-
-#Recommendations:
-#Marketing should be targeted for the most popular casual riders days like Friday, Saturday and Friday, good idea could be
-  #bigger price for these days so they could subscribe or going to the opposite way - new subscribe for only weekends
-#Company also can look on best/worst months. The worst are winter months because of temp and weather so maybe promotions
-  #for these months to boost sales
